@@ -1,10 +1,21 @@
 #!/bin/sh
 
-OLD_FINGERPRINT=/opt/unipi/os-configurator/fingerprint
+OLD_FINGERPRINT=/etc/unipi/fingerprint
+ULIB_PATH="/usr/lib/unipi"
+
+if [ "$(id -u)" != "0" ]; then
+    echo "This program must be run as root!" >&2
+    exit 1
+fi
+
+if bash -c "[[ \"$TERM\" =~ \"color\" ]] || [[ \"$DPKG_COLORS\" != \"never\" ]]"; then
+  RED="\e[31m"
+  NORMAL="\e[0m"
+fi
 
 if [ "$1" = "--check" ]; then
     echo "<6>OS Configurator: check started" > /dev/kmsg
-    FG="$(/opt/unipi/tools/unipiid fingerprint)"
+    FG="$($ULIB_PATH/unipiid fingerprint)"
     if [ -n "$FG" ]; then
         rm /run/motd.d/99-unipi-id
     fi
@@ -21,9 +32,9 @@ fi
 if [ "$1" = "--update" ]; then
     echo "<6>OS Configurator: Update invoked" > /dev/kmsg
     export UNIPI_OSCONF_UPDATE=1
-    if python3 /opt/unipi/os-configurator/os-configurator.py $*; then
-        /opt/unipi/tools/unipiid fingerprint > "${OLD_FINGERPRINT}"
-        echo "Reboot system to apply all changes in configuration"
+    if python3 "$ULIB_PATH/os-configurator.py" "$@"; then
+        "$ULIB_PATH/unipiid" fingerprint > "${OLD_FINGERPRINT}"
+        echo "${RED}Reboot system to apply all changes in configuration${NORMAL}"
         sync
         mount / -o remount,ro
         #sleep 2;
@@ -35,12 +46,12 @@ if [ "$1" = "--update" ]; then
 fi
 if [ "$1" = "--force" ]; then
     export UNIPI_OSCONF_FORCE=1
-    if python3 /opt/unipi/os-configurator/os-configurator.py $*; then
-        /opt/unipi/tools/unipiid fingerprint > "${OLD_FINGERPRINT}"
+    if python3 "$ULIB_PATH/os-configurator.py" "$@"; then
+        "$ULIB_PATH/unipiid" fingerprint > "${OLD_FINGERPRINT}"
     else
         rm -f "${OLD_FINGERPRINT}"
     fi
-    echo "Reboot system to apply all changes in configuration"
+    echo "${RED}Reboot system to apply all changes in configuration${NORMAL}"
     exit 0
 fi
-exec python3 /opt/unipi/os-configurator/os-configurator.py $*
+exec python3 "$ULIB_PATH/os-configurator.py" "$@"

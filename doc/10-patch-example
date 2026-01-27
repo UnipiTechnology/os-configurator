@@ -8,4 +8,4 @@
 if [ -e "/boot/unipi-patron.dtb.kernel" ] && ! [ -e "/boot/unipi-patron.dtb" ]; then
     dpkg-divert --rename --remove /boot/unipi-patron.dtb || true
 fi
-rm -f /opt/unipi/os-configurator/run.d/10-fix-divert.sh || true
+rm -f /usr/lib/unipi/run.d/10-fix-divert.sh || true

@@ -1,4 +1,4 @@
-Scripts in /opt/unipi/os-configurator/run.d can be any executable with extension .sh like shell or python scripts, binary programs.
+Scripts in /usr/lib/unipi/run.d can be any executable with extension .sh like shell or python scripts, binary programs.
 
 Do not modify scripts installed by other packeges. Install rather your own script.
 

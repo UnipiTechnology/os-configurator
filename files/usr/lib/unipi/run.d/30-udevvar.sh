@@ -5,12 +5,12 @@
 
 #UDEV="id0074_slot12"
 
-SRC=/opt/unipi/os-configurator/udev
+SRC=/usr/share/unipi-os-configurator/udev
 DST=/etc/udev/rules.d/45-udevvar.rules
 
 if [ -n "$UDEV" ]; then 
 (
-cd "${SRC}"
+cd "${SRC}" || exit 1
 # append to words in udev list suffix .rules
 udev_rules_1=$(echo "${UDEV}" | sed 's/\>/.rules/g')
 awk '
@@ -23,6 +23,6 @@ awk '
 		gsub(var, val)
 		print
 }
-' ${udev_rules_1} > "${DST}"
+' "${udev_rules_1}" > "${DST}"
 )
 fi

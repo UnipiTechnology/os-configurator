@@ -15,7 +15,7 @@ int writeboot(int bootcount)
     int fd;
     off_t position;
     uint16_t wbootcount;
-    int ret;
+    int ret=0;
 
     fd = open(filename, O_WRONLY);
     if (fd < 0) {

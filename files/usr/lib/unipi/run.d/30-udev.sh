@@ -3,7 +3,7 @@
 
 #UDEV="id0074_slot12"
 
-SRC=/opt/unipi/os-configurator/udev
+SRC=/usr/share/unipi-os-configurator/udev
 DST=/etc/udev/rules.d
 
 if [ -n "$UDEV" ]; then 

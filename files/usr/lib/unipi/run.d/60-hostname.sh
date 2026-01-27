@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # create hostname based on PLC version and serial
 #
@@ -7,8 +7,8 @@
 # to permanent setting from /etc/hostname after dhcp lease
 #
 # We set permanent hostname here during os-configuration
-
-newhostname=$(/opt/unipi/tools/unipihostname)
+ULIB_PATH=/usr/lib/unipi
+newhostname=$($ULIB_PATH/unipihostname)
 hostname=$(head -1 /etc/hostname)
 
 if [ -z "$newhostname" ] || [ "$hostname" = "$newhostname" ]; then
@@ -19,12 +19,12 @@ fi
 if [ "$hostname" = "unipi" ] || \
    [ "$hostname" = "raspberrypi" ] || \
    [ "$hostname" = "raspberrypi5" ] || \
-   [[ "$hostname" =~ -sn[0-9]+$ ]]; then
+   { echo "$hostname" | grep -Exq '^.*-sn[0-9]+$';}; then
 
     echo "Changing hostname from $hostname -> $newhostname"
     echo "$newhostname" > /etc/hostname
     if ! grep -q "^127.0.1.1  $newhostname$" /etc/hosts; then
         echo "127.0.1.1  $newhostname" >> /etc/hosts
     fi
-    hostname $newhostname
+    hostname "$newhostname"
 fi

@@ -9,9 +9,9 @@ case "$1" in
     dpkg-trigger os-configurator-force
     ;;
   triggered)
-    if [ -x /opt/unipi/tools/os-configurator ]; then
+    if [ -x /usr/sbin/os-configurator ]; then
       echo "Calling os-configurator update..." >&2
-      ( /opt/unipi/tools/os-configurator --force && dpkg-trigger os-configurator-done ) || echo "os-configurator return error, please call it manually."
+      ( /usr/sbin/os-configurator --force && dpkg-trigger os-configurator-done ) || echo "os-configurator return error, please call it manually."
     fi
   ;;
 esac

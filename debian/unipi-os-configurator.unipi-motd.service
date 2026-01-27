@@ -4,7 +4,7 @@ DefaultDependencies=No
 
 [Service]
 Type=oneshot
-ExecStart=-/bin/sh -c "mkdir -p /run/motd.d && cp /opt/unipi/os-configurator/data/motd /run/motd.d/99-unipi-id"
+ExecStart=-/bin/sh -c "mkdir -p /run/motd.d && cp /usr/share/unipi-os-configurator/motd /run/motd.d/99-unipi-id"
 
 [Install]
 WantedBy=sysinit.target

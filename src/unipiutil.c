@@ -160,20 +160,20 @@ uint8_t* get_unipi_eeprom_property(char* nvram, int property_type, int *len)
 	int ret;
 	int fd = open(nvram, O_RDONLY);
 	if (fd < 0)
-		return fd;
+		return NULL;
 
 	//ret = i2c_eeprom_read(dev, 0x0, unipi_eprom, UNIPI_EEPROM_SIZE);
 	ret = read(fd, unipi_eprom, UNIPI_EEPROM_SIZE);
 	close(fd);
 	if (ret < 0) {
-		return ret;
+		return NULL;
 	}
 
     /* check unipi mark */
 	uniee_descriptor = uniee_get_valid_descriptor(unipi_eprom, UNIPI_EEPROM_SIZE);
 	if (uniee_descriptor == NULL) {
 		unipi_eprom_validity = 1;
-		return -1;
+		return NULL;
 	}
 
 	uniee_fix_legacy_content(unipi_eprom, UNIPI_EEPROM_SIZE, uniee_descriptor);

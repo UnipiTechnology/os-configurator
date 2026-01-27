@@ -11,7 +11,7 @@ ConditionVirtualization=No
 
 [Service]
 Type=oneshot
-ExecStart=/opt/unipi/tools/os-configurator --check --update
+ExecStart=/usr/sbin/os-configurator --check --update
 RemainAfterExit=yes
 
 [Install]

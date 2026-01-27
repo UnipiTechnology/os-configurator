@@ -133,6 +133,7 @@ int main(int argc, char **argv)
 	char *dev, *interface;
 	char *action = getenv("ACTION");
 	char *subsystem = getenv("SUBSYSTEM");
+	char *uhelper_link;
 
 	if ((action == NULL) || (argc < 3) ) {
 		return 1;
@@ -163,6 +164,9 @@ int main(int argc, char **argv)
 				((strcmp(subsystem, "tty")==0)||\
 				(strcmp(subsystem, "gpio")==0)||\
 				(strcmp(subsystem, "block")==0)||\
+				(strcmp(subsystem, "mtd")==0)||\
+				(strcmp(subsystem, "tpm")==0)||\
+				(strcmp(subsystem, "tpmrm")==0)||\
 				(strcmp(subsystem, "spidev")==0))) {
 			dev = getenv("DEVNAME");
 			if (dev) {
@@ -175,7 +179,11 @@ int main(int argc, char **argv)
 		}
 		dev = getenv("DEVPATH");
 		if (dev) {
-			snprintf(sysdev, PATH_MAX-1, "/sys%s", dev);
+			uhelper_link = getenv("UHELPER_LINK");
+			if (uhelper_link)
+				snprintf(sysdev, PATH_MAX-1, "/sys%s/%s", dev, uhelper_link);
+			else
+				snprintf(sysdev, PATH_MAX-1, "/sys%s", dev);
 			ln_sf(sysdev, u_slot_dir, u_func);
 			ln_sf(sysdev, u_sys_dir,  u_func);
 		}

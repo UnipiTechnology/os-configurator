@@ -1,7 +1,8 @@
 
 import os, sys
 
-sys.path.append("/opt/unipi/os-configurator")
+ULIB_PATH="/usr/lib/unipi"
+sys.path.append(ULIB_PATH)
 import unipi_values as lib
 
 
@@ -185,23 +186,27 @@ if __name__ == "__main__":
 	a = argparse.ArgumentParser(prog='os-configurator.py')
 	a.add_argument('-u','--update', help='run action to modify os', action='store_const', const=True, default=False )
 	a.add_argument('-f','--force', help='run action to modify os by ignoring errors', action='store_const', const=True, default=False )
+	a.add_argument('-v','--verbose', help='be verbose', action='store_const', const=True, default=False )
 	#a.add_argument('description', metavar="file", help='input yaml description', type=str, nargs=1)
 	args = a.parse_args()
 	env = None
 	try:
 		env = main_overlays()
-		if args.update:
-			os.environ.update(**{k.upper(): print_recursive(v).strip() for k,v in env.items()})
-			os.execlpe("run-parts", "run-parts", "--verbose",
-				"--regex=.sh$", "--exit-on-error",
-				"/opt/unipi/os-configurator/run.d",
-				os.environ)
-		else:
+		if args.verbose:
 			for k,v in env.items():
 				print("{}='{}'".format(k.upper(), print_recursive(v).strip()))
+			# add variable to env for run.d scripts
+			env['VERBOSE']="1"
 
-		if not args.force:
+		if not args.update and not args.force:
 			sys.exit(0)
+
+		if args.update:
+			os.environ.update(**{k.upper(): print_recursive(v).strip() for k,v in env.items()})
+			rargs = [ "run-parts", "--regex=.sh$", "--exit-on-error", ULIB_PATH+"/run.d" ]
+			if args.verbose:
+				rargs.append("--verbose")
+			os.execlpe("run-parts", *rargs, os.environ)
 
 	except FileNotFoundError as E:
 		print("Missing unipi-id module or bad id eprom.\n")
@@ -210,9 +215,9 @@ if __name__ == "__main__":
 
 	if args.force:
 		if env: os.environ.update(**{k.upper(): print_recursive(v).strip() for k,v in env.items()})
-		os.execlpe("run-parts", "run-parts", "--verbose",
-			"--regex=.sh$",
-			"/opt/unipi/os-configurator/run.d",
-			os.environ)
+		rargs = [ "run-parts", "--regex=.sh$", ULIB_PATH+"/run.d" ]
+		if args.verbose:
+			rargs.append("--verbose")
+		os.execlpe("run-parts", *rargs, os.environ)
 
 	sys.exit(1)

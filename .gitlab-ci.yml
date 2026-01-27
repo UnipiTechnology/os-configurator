@@ -1,6 +1,0 @@
-include:
-    project: docker/template
-    file: debian-pkg-ng.yaml
-variables:
-    build_for_architecture: "arm64 armhf"
-    build_for_distribution: "bookworm"

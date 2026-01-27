@@ -4,7 +4,7 @@ BindsTo=sys-devices-platform-bootcount.device
 
 [Service]
 Type=oneshot
-ExecStart=-/opt/unipi/tools/bootcount clear
+ExecStart=-/usr/lib/unipi/bootcount clear
 ExecStart=/bin/rm -f /boot/recover.scr
 ExecStart=/bin/rm -f /boot/tryboot
 RemainAfterExit=yes
