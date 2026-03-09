@@ -76,7 +76,11 @@ int main(int argc, char** argv)
     int mode = 0;
     if (argc > 1) {
         if (strcmp(argv[1], "clear") == 0) mode = 1;
-        if (strcmp(argv[1], "set") == 0) mode = 2;
+        if (strcmp(argv[1], "set") == 0) mode = 99;
+    }
+    if (mode == 99 && argc > 2) {
+        if (strcmp(argv[2], "a") == 0) mode = 100;
+        if (strcmp(argv[2], "b") == 0) mode = 101;
     }
     int bootcount = readboot();
     if (bootcount < 0)
@@ -84,7 +88,7 @@ int main(int argc, char** argv)
     if (mode==0) {
         printf("bootcount=%d\n", bootcount);
     } else {
-        writeboot(mode==1?0:99);
+        writeboot(mode==1?0:mode);
         printf("bootcount: %d -> %d\n", bootcount, readboot());
     }
 }

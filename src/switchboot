@@ -8,7 +8,9 @@ create_alternate_script()
     bootdev="$2"
     mmc=$(basename "$bootdev")
     mmc=$(echo "$mmc" | sed 's/blk//')
-    echo "$mmc:$1" > /boot/tryboot
+    if [ -w "/boot/" ]; then
+        echo "$mmc:$1" > /boot/tryboot
+    fi
 
     #tmp=$(mktemp)
     #echo "distro_bootpart=$altpart" > "$tmp"
@@ -80,12 +82,15 @@ case "$1" in
         fi
         altpart=$(swap_part_number "$bootpart") || exit 1
         create_alternate_script "$altpart" "$bootdev"
-        "$ULIB_PATH/bootcount" set
+        if [ "$altpart" -gt "$bootpart" ]; then mode="b"; else mode="a"; fi
+        "$ULIB_PATH/bootcount" set "$mode"
         ;;
   os-configurator-event)
         # call from os-configurator during boot to try reboot again
         if [ "$bootpart" != "$pbootpart" ]; then
-            "$ULIB_PATH/bootcount" set
+            altpart=$(swap_part_number "$pbootpart") || exit 1
+            if [ "$altpart" -gt "$pbootpart" ]; then mode="b"; else mode="a"; fi
+            "$ULIB_PATH/bootcount" set "$mode"
         fi
         ;;
 
