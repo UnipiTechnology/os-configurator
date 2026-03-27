@@ -64,21 +64,25 @@ platform:
         M567: 0x0907
         S167: 0x0a07
         S227: 0x0b07
+        AKUZU1: 0x0c07
+        S167_2: 0x0d07
+        M267_2: 0x0e07
+        M567_2: 0x0f07
 
         # Edge
+        AKUSO1: 0x0106
         E10100_PROTOTYP: 0x0206
         E410: 0x0306
         E411: 0x0406
         E412: 0x0506
         E413: 0x0606
+        E414: 0x0706 # W/O ledproxy
+        E415: 0x0806 # W ledproxy
 
         # OEM Specials
-        AKUZU1: 0x0c07
-        
         ACHE1: 0x0110
         ACHE2: 0x0210
 
-        AKUSO1: 0x0106
 
 # uniee_bank_2_t.board_model
 board:
@@ -128,15 +132,17 @@ board:
 
 # Edge boards
 
-        UDELAB0101:        200
-        UDELAB0102:        201
-        UDELAB0202:        202
-        UDELAB0302:        203
-        UDELAB0402:        204
+        UDELAB01_pre:      200
+        UDELAB01:          201
+        UDELAB02:          202
+        UDELAB03:          203
+        UDELAB04:          204
+        UDELAB05:          205 # KWB w/o ledproxy
+        UDELAB06:          206 # KWB w ledproxy
 
-        UDEUAB0102:        221
-        UDEUAB0202:        222
-        UDEUAB0302:        223
+        UDEUAB01:          221
+        UDEUAB02:          222
+        UDEUAB03:          223
 
 
 # OEM (external vendor) Iris cards
@@ -162,6 +168,7 @@ field:
         AICAL:  7
         MAC1:   8
         MODEM:  9
+        MODEL:  10
     value:
         button:
             PATRON: 0

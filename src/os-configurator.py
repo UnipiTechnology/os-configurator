@@ -10,7 +10,7 @@ def is_valid_id(board_id):
 	return not (board_id in (0, 0xffff))
 
 class UnipiId:
-	path = "/sys/devices/platform/unipi-id/unipi-id/"
+	path = "/run/unipi-plc/unipi-id/"
 
 	def __init__(self):
 		pass

@@ -15,9 +15,9 @@ fi
 
 if [ "$1" = "--check" ]; then
     echo "<6>OS Configurator: check started" > /dev/kmsg
-    FG="$($ULIB_PATH/unipiid fingerprint)"
+    FG="$(unipiid fingerprint)"
     if [ -n "$FG" ]; then
-        rm /run/motd.d/99-unipi-id
+        rm -f /run/motd.d/99-unipi-id
     fi
 
     if [ "$FG" = "$(cat ${OLD_FINGERPRINT})" ]; then
@@ -33,7 +33,7 @@ if [ "$1" = "--update" ]; then
     echo "<6>OS Configurator: Update invoked" > /dev/kmsg
     export UNIPI_OSCONF_UPDATE=1
     if python3 "$ULIB_PATH/os-configurator.py" "$@"; then
-        "$ULIB_PATH/unipiid" fingerprint > "${OLD_FINGERPRINT}"
+        unipiid fingerprint > "${OLD_FINGERPRINT}"
         echo "${RED}Reboot system to apply all changes in configuration${NORMAL}"
         sync
         mount / -o remount,ro
@@ -47,7 +47,7 @@ fi
 if [ "$1" = "--force" ]; then
     export UNIPI_OSCONF_FORCE=1
     if python3 "$ULIB_PATH/os-configurator.py" "$@"; then
-        "$ULIB_PATH/unipiid" fingerprint > "${OLD_FINGERPRINT}"
+        unipiid fingerprint > "${OLD_FINGERPRINT}"
     else
         rm -f "${OLD_FINGERPRINT}"
     fi

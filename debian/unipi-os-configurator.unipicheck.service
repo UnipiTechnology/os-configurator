@@ -1,8 +1,6 @@
 [Unit]
 Description=Check Unipi Id fingerprint and call os-configurator
 After=local-fs.target
-BindsTo=sys-devices-platform-unipi\x2did.device
-After=sys-devices-platform-unipi\x2did.device
 Before=basic.target
 After=sysinit.target
 Requires=sysinit.target
@@ -14,5 +12,5 @@ Type=oneshot
 ExecStart=/usr/sbin/os-configurator --check --update
 RemainAfterExit=yes
 
-[Install]
-WantedBy=sysinit.target
+#[Install]
+#WantedBy=unipi-os-configurator.unipicheck.path

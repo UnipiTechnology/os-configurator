@@ -23,9 +23,11 @@ ifdef PROJECT_VERSION
 override PROJECT_VERSION := -DPROJECT_VERSION=$(PROJECT_VERSION)
 endif
 
+CC = $(CROSS_COMPILE)gcc
 
-LIB_FILES = unipiid unipihostname uhelper sw_485 bootcount
+LIB_FILES = unipihostname uhelper sw_485 bootcount
 SBIN_FILES = os-configurator switchboot
+BIN_FILES = unipiid
 PY_FILES = os-configurator.py
 
 INCDIRS += ../unipi-hardware-id/include
@@ -41,8 +43,8 @@ all: $(LIB_FILES) $(PY_FILES)
 sw_485: sw_485.o
 	$(CC) $< -o $@
 
-unipiid:  unipiid.o unipiutil.o
-	$(CC) unipiid.o unipiutil.o -o $@
+unipiid:  unipiid.o unipiid-loader.o unipiid-getter.o
+	$(CC) $+ -o $@ -lcrypto -li2c
 	@chmod +x $@
 
 uhelper:  uhelper.o
@@ -58,9 +60,9 @@ bootcount:  bootcount.o
 install:
 	$(INSTALL) -D $(LIB_FILES) $(PY_FILES) -t $(DESTDIR)/usr/lib/unipi
 	$(INSTALL) -D $(SBIN_FILES) -t $(DESTDIR)/usr/sbin
+	$(INSTALL) -D $(BIN_FILES) -t $(DESTDIR)/usr/bin
 	@mkdir -p $(DESTDIR)/etc/unipi
 
 clean:
 	-rm -f *.o
 	-rm -f bootcount unipihostname uhelper unipiid sw_485
-

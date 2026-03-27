@@ -230,6 +230,11 @@ static inline void uniee_fix_legacy_content(uint8_t* buff, int size, uniee_descr
 		descriptor->board_info.specdata_headers_table[0].field_len = sizeof(rtc_cal);
 		memcpy(buff, &rtc_cal, sizeof(rtc_cal));
 	}
+	/* Fix 4.10 version of Neuron incorrectrly written as 4.1 */
+	if (descriptor->product_info.product_version.major==4 &&
+	    descriptor->product_info.product_version.minor==1 &&
+	    descriptor->product_info.model_str[3] == '3')
+		descriptor->product_info.product_version.minor = 10;
 }
 
 
