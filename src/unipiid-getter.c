@@ -207,19 +207,24 @@ static ssize_t mainboard_id_show(struct unipi_id_data *unipi_id, char *buf)
 static ssize_t mainboard_description_show(struct unipi_id_data *unipi_id, char *buf)
 {
 	uniee_bank_2_t *bank2;
+	char sversion[256];
 	int ret;
 
 	if (unipi_id == NULL)
 		return 0;
 	bank2 = &unipi_id->descriptor.board_info;
 
+	if (bank2->board_version.minor >= 'A')
+		snprintf(sversion, sizeof(sversion), "%u%c", bank2->board_version.major, bank2->board_version.minor);
+	else
+		snprintf(sversion, sizeof(sversion), "%u%.%u", bank2->board_version.major, bank2->board_version.minor);
 	ret = snprintf(buf, 2048,
 				"Model:   Mainboard\n"
-				"Version: %u.%u\n"
+				"Version: %s\n"
 				"Serial:  %08u\n"
 				"ID:      0x%04X\n"
 				"Nvmem:   %s\n",
-				bank2->board_version.major, bank2->board_version.minor,
+				sversion,
 				bank2->board_serial,
 				bank2->board_model,
 				unipi_id->main_eprom_path);
