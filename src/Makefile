@@ -23,7 +23,7 @@ ifdef PROJECT_VERSION
 override PROJECT_VERSION := -DPROJECT_VERSION=$(PROJECT_VERSION)
 endif
 
-CC = $(CROSS_COMPILE)gcc
+#CC = $(CROSS_COMPILE)gcc
 
 LIB_FILES = unipihostname uhelper sw_485 bootcount
 SBIN_FILES = os-configurator switchboot
