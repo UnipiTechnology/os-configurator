@@ -67,7 +67,7 @@ int write_interface(char *dir, char* interface)
 	if (fd < 0) {
 		return fd;
 	}
-	write(fd, interface, strlen(interface));
+	(void)! write(fd, interface, strlen(interface));
 	close(fd);
 	return 0;
 }
@@ -77,7 +77,7 @@ int ln_sf(const char *target, const char* dir, const char *linkpath)
 	char tmp[PATH_MAX];
 	snprintf(tmp, PATH_MAX-1, "%s/%s", dir, linkpath);
 	unlink(tmp);
-	symlink(target, tmp);
+	(void)! symlink(target, tmp);
 	return 0;
 }
 
@@ -100,8 +100,8 @@ int create_udev_infofile(char *dir)
 	}
 
 	for (char **env_item = environ; *env_item != 0; env_item++) {
-		write(fd, *env_item, strlen(*env_item));
-		write(fd, "\n", 1);
+		(void)! write(fd, *env_item, strlen(*env_item));
+		(void)! write(fd, "\n", 1);
         }
 
 	close(fd);

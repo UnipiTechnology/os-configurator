@@ -217,7 +217,7 @@ static ssize_t mainboard_description_show(struct unipi_id_data *unipi_id, char *
 	if (bank2->board_version.minor >= 'A')
 		snprintf(sversion, sizeof(sversion), "%u%c", bank2->board_version.major, bank2->board_version.minor);
 	else
-		snprintf(sversion, sizeof(sversion), "%u%.%u", bank2->board_version.major, bank2->board_version.minor);
+		snprintf(sversion, sizeof(sversion), "%u.%u", bank2->board_version.major, bank2->board_version.minor);
 	ret = snprintf(buf, 2048,
 				"Model:   Mainboard\n"
 				"Version: %s\n"

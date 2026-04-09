@@ -246,7 +246,7 @@ bool unipi_id_load_client(char *adapter, unsigned int index, const char* eprom_t
 	int fdn = open(path, O_WRONLY);
 	if (fdn < 0)
 		return false;
-	write(fdn, buf, strlen(buf));
+	(void)! write(fdn, buf, strlen(buf));
 	close(fdn);
 	usleep(100000);
 

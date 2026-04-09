@@ -62,7 +62,7 @@ int do_hostname(int argc, char** argv)
 		snprintf(hostname, 255, "%s-sn%s", unipi_model, unipi_serial);
 	hostname[255] = '\0';
 	if (do_set)
-		sethostname(hostname,strlen(hostname));
+		(void)! sethostname(hostname,strlen(hostname));
 	else
 		printf("%s\n", hostname);
 
