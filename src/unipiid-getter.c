@@ -114,11 +114,11 @@ static ssize_t product_code_show(struct unipi_id_data *unipi_id, char *buf)
 		return 0;
 	bank3 = &unipi_id->descriptor.product_info;
 	if (unipi_id->model_fullname[0] != '\0')
-		return snprintf(buf, 255, "%u;%.64s_%u.%u;%u", bank3->sku,
+		return snprintf(buf, 255, "#%u;%.64s_%u.%u;%u#", bank3->sku,
 		                unipi_id->model_fullname,
 		                bank3->product_version.major, bank3->product_version.minor,
 		                bank3->product_serial);
-	return snprintf(buf, 255, "%u;%.6s_%u.%u;%u", bank3->sku,
+	return snprintf(buf, 255, "#%u;%.6s_%u.%u;%u#", bank3->sku,
 	                bank3->model_str,
 	                bank3->product_version.major, bank3->product_version.minor,
 	                bank3->product_serial);
