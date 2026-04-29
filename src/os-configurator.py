@@ -113,6 +113,16 @@ def get_mainboard_info():
 		warning("Unknown board %04x" % (board_id,))
 	return board_info
 
+def get_uboard_info():
+	try:
+		board_id = UnipiId.get_hex_item('uboard_id')
+	except:
+		return None
+	board_info = lib.unipi_board_info(board_id)
+	if not board_info and (is_valid_id(board_id)):
+		warning("Unknown board %04x" % (board_id,))
+	return board_info
+
 
 def merge_dict(dest, source, filter_str=None):
 
@@ -152,6 +162,10 @@ def main_overlays():
 	board_info = get_mainboard_info()
 	if board_info:
 		merge_dict(result, board_info.vars)
+
+	uboard_info = get_uboard_info()
+	if uboard_info:
+		merge_dict(result, uboard_info.vars)
 
 	cards = [(slot,card_id)for slot, card_id in UnipiId.slot_ids()]
 

@@ -76,8 +76,8 @@ platform:
         E411: 0x0406
         E412: 0x0506
         E413: 0x0606
-        E414: 0x0706 # W/O ledproxy
-        E415: 0x0806 # W ledproxy
+        E414: 0x0706 # W ledproxy
+        E415: 0x0806 # W/O ledproxy
 
         # OEM Specials
         ACHE1: 0x0110
@@ -143,6 +143,9 @@ board:
         UDEUAB01:          221
         UDEUAB02:          222
         UDEUAB03:          223
+        UDEUAC01:          224
+        UDEUAC02:          225
+        UDEUAC03:          226
 
 
 # OEM (external vendor) Iris cards
@@ -169,6 +172,7 @@ field:
         MAC1:   8
         MODEM:  9
         MODEL:  10
+        UPPER_BOARD:  11
     value:
         button:
             PATRON: 0

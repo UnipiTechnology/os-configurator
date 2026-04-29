@@ -13,6 +13,7 @@ if [ -n "$UDEV" ]; then
 cd "${SRC}" || exit 1
 # append to words in udev list suffix .rules
 udev_rules_1=$(echo "${UDEV}" | sed 's/\>/.rules/g')
+# shellcheck disable=SC2086
 awk '
 /^#:::/ {
 		gsub("^#:::\\s*", "")
@@ -23,6 +24,6 @@ awk '
 		gsub(var, val)
 		print
 }
-' "${udev_rules_1}" > "${DST}"
+' ${udev_rules_1} > "${DST}"
 )
 fi

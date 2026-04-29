@@ -129,6 +129,9 @@
  #define UNIEE_BOARD_MODEL_UDEUAB01	221
  #define UNIEE_BOARD_MODEL_UDEUAB02	222
  #define UNIEE_BOARD_MODEL_UDEUAB03	223
+ #define UNIEE_BOARD_MODEL_UDEUAC01	224
+ #define UNIEE_BOARD_MODEL_UDEUAC02	225
+ #define UNIEE_BOARD_MODEL_UDEUAC03	226
  #define UNIEE_BOARD_MODEL_IC_IQRF_1	1000
  #define UNIEE_BOARD_MODEL_ID_ETH100DI1WIFI_1	1001
  #define UNIEE_BOARD_MODEL_CD_MACHZLM_1	2000
@@ -147,6 +150,7 @@
  #define UNIEE_FIELD_TYPE_MAC1	8
  #define UNIEE_FIELD_TYPE_MODEM	9
  #define UNIEE_FIELD_TYPE_MODEL	10
+ #define UNIEE_FIELD_TYPE_UPPER_BOARD	11
 
 
 /* values of fields stored in uniee_bank_1_t.dummy_data */
@@ -173,6 +177,7 @@ struct uniee_map {
  { 8,"MAC1" },\
  { 9,"MODEM" },\
  { 10,"MODEL" },\
+ { 11,"UPPER_BOARD" },\
 }
 
 #define DIM(x) (sizeof(x)/sizeof(*(x)))

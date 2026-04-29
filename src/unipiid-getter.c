@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include "uniee.h"
 #include "uniee_values.h"
+#include "unipi_eprom.h"
 
 #include "unipi_id.h"
 
@@ -36,6 +37,7 @@ static ssize_t platform_family_show(struct unipi_id_data *unipi_id, char *buf);
 static ssize_t platform_id_show(struct unipi_id_data *unipi_id, char *buf);
 static ssize_t mainboard_description_show(struct unipi_id_data *unipi_id, char *buf);
 static ssize_t mainboard_id_show(struct unipi_id_data *unipi_id, char *buf);
+static ssize_t uboard_id_show(struct unipi_id_data *unipi_id, char *buf);
 static ssize_t fingerprint_show(struct unipi_id_data *unipi_id, char *buf);
 static ssize_t api_version_show(struct unipi_id_data *unipi_id, char *buf);
 
@@ -65,6 +67,7 @@ const struct unipi_id_item unipi_id_items[] = {
 	{"platform_id", platform_id_show},
 	{"mainboard_description", mainboard_description_show},
 	{"mainboard_id", mainboard_id_show},
+	{"uboard_id", uboard_id_show},
 	{"fingerprint", fingerprint_show},
 	{"api_version", api_version_show},
 	{NULL, NULL}
@@ -229,6 +232,21 @@ static ssize_t mainboard_description_show(struct unipi_id_data *unipi_id, char *
 				bank2->board_model,
 				unipi_id->main_eprom_path);
 	return ret;
+}
+
+static ssize_t uboard_id_show(struct unipi_id_data *unipi_id, char *buf)
+{
+	uint8_t *data;
+	int len = 0;
+
+	if (unipi_id == NULL)
+		return 0;
+
+	data = unipi_eeprom_find_property(unipi_id->data_area, &unipi_id->descriptor,
+	                                  UNIEE_FIELD_TYPE_UPPER_BOARD, &len);
+	if (data == NULL || len != 2)
+		return 0;
+	return snprintf(buf, 255, "%04x", data[0]|(data[1]>>8));
 }
 
 static ssize_t card_id_show(struct unipi_id_data *unipi_id, int nvmem_index, char *buf)
