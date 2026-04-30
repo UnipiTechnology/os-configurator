@@ -176,7 +176,7 @@ def main_overlays():
 		if card_info:
 			merge_dict(result, card_info.vars,  product_info.vars.get("unipi_platform"))
 
-	if product_info.vars.get('use_etc_modules', '0') == '1':
+	if product_info and product_info.vars.get('use_etc_modules', '0') == '1':
 		cards += [(slot,card_id)for slot, card_id in Unipi1Id.slot_ids()]
 		#cards1 = " ".join((f"{card_id}__{slot}" for slot, card_id in Unipi1Id.slot_ids()))
 		#if cards1 and cards:

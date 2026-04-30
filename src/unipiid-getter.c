@@ -133,7 +133,7 @@ static ssize_t product_serial_show(struct unipi_id_data *unipi_id, char *buf)
 	if (unipi_id == NULL)
 		return 0;
 	bank3 = &unipi_id->descriptor.product_info;
-	return snprintf(buf, 255, "%d", bank3->product_serial);
+	return snprintf(buf, 255, "%u", bank3->product_serial);
 }
 
 static ssize_t product_family_show(struct unipi_id_data *unipi_id, char *buf)
