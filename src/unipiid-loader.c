@@ -401,7 +401,8 @@ bool read_alias(const char * path, char *devtree_path, int maxlen)
 bool get_eprom_device(char *device, int maxlen)
 {
 	const char *unipi_mb_symbol = "/proc/device-tree/__symbols__/unipi_mb";
-	const char *unipi_mb_alias = "/proc/device-tree/aliases/unipi_mb";
+	const char *unipi_mb_alias_old = "/proc/device-tree/aliases/unipi_mb";
+	const char *unipi_mb_alias = "/proc/device-tree/aliases/unipi-mb";
 	const char *unipi_id_nvmem = "/proc/device-tree/unipi-id/nvmem";
 	char devtree_path[PATH_MAX];
 	uint32_t phandle;
@@ -409,6 +410,7 @@ bool get_eprom_device(char *device, int maxlen)
 	memset(device, 0, maxlen);
 	memset(devtree_path, 0, sizeof(devtree_path));
 	if (read_alias(unipi_mb_alias, devtree_path, sizeof(devtree_path)-1) ||
+	    read_alias(unipi_mb_alias_old, devtree_path, sizeof(devtree_path)-1) ||
 	    read_alias(unipi_mb_symbol, devtree_path, sizeof(devtree_path)-1)) {
 		//fprintf(stderr, "devtree %s\n", devtree_path);
 		find_i2c_device_by_alias(devtree_path, device, maxlen);
