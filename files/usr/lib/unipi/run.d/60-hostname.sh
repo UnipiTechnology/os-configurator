@@ -11,7 +11,7 @@ ULIB_PATH=/usr/lib/unipi
 newhostname=$($ULIB_PATH/unipihostname)
 hostname=$(head -1 /etc/hostname)
 
-if [ -z "$newhostname" ] || [ "$hostname" = "$newhostname" ]; then
+if [ -z "$newhostname" ] || [ "$hostname" = "$newhostname" ] || [ "$newhostname" = "-sn0" ]; then
     exit
 fi
 
@@ -26,5 +26,5 @@ if [ "$hostname" = "unipi" ] || \
     if ! grep -q "^127.0.1.1  $newhostname$" /etc/hosts; then
         echo "127.0.1.1  $newhostname" >> /etc/hosts
     fi
-    hostname "$newhostname"
+    hostname -- "$newhostname"
 fi
