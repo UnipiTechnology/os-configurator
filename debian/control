@@ -11,5 +11,4 @@ Vcs-Browser: https://github.com/UnipiTechnology/os-configurator
 Package: unipi-os-configurator
 Architecture: any
 Depends: libssl3, libi2c0, ${misc:Depends}
-Breaks: unipi-os-configurator-data
 Description: Binaries and scripts for Unipi OS configurator
