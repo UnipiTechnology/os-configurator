@@ -1,16 +1,15 @@
 Source: unipi-os-configurator
 Section: unknown
 Priority: optional
-Maintainer: Martin Kudlacek <kudlacek@unipi.technology>
+Maintainer: Miroslav Ondra <ondra@unipi.technology>
 Build-Depends: debhelper-compat (= 13)
 Standards-Version: 3.9.8.0
-Homepage: www.unipi.technology
-#Vcs-Git: https://git.unipi.technology/UniPi/os-configurator
-#Vcs-Browser: https://git.unipi.technology/UniPi/os-configurator
+Homepage: https://www.unipi.technology/
+Vcs-Git: https://github.com/UnipiTechnology/os-configurator.git
+Vcs-Browser: https://github.com/UnipiTechnology/os-configurator
 
 Package: unipi-os-configurator
 Architecture: any
 Depends: libssl3, libi2c0, ${misc:Depends}
-Breaks: unipi-os-configurator-data (<= 0.12)
+Breaks: unipi-os-configurator-data
 Description: Binaries and scripts for Unipi OS configurator
- 

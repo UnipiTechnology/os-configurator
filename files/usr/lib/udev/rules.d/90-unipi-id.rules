@@ -1,4 +1,3 @@
 
-#SUBSYSTEM=="platform", ACTION=="bind", DEVPATH=="/devices/platform/unipi-id", TAG+="systemd", RUN+="/usr/lib/unipi/uhelper unipi-id unipi-id"
 SUBSYSTEM=="i2c", ACTION=="add", DEVPATH=="/devices/platform/*-0057", TAG+="systemd", RUN+="/usr/bin/unipiid -d"
 SUBSYSTEM=="i2c", ACTION=="add", DEVPATH=="/devices/platform/*-0050", TAG+="systemd", RUN+="/usr/bin/unipiid -d"
