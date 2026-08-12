@@ -206,9 +206,7 @@ static inline void uniee_fix_legacy_content(uint8_t* buff, int size, uniee_descr
 			memcpy(buff, &descriptor->product_info.sku, 2*sizeof(float));
 			descriptor->product_info.sku = 0xffffffff;
 			descriptor->board_info.specdata_headers_table[0].field_type = UNIEE_FIELD_TYPE_AICAL;
-			descriptor->board_info.specdata_headers_table[0].field_len = sizeof(float);
-			descriptor->board_info.specdata_headers_table[1].field_type = UNIEE_FIELD_TYPE_AICAL;
-			descriptor->board_info.specdata_headers_table[1].field_len = sizeof(float);
+			descriptor->board_info.specdata_headers_table[0].field_len = 2*sizeof(float);
 		}
 		else if ((descriptor->product_info.product_version.major==0x11)
 			&& (descriptor->product_info.product_version.minor==1)){

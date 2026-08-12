@@ -1,7 +1,9 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <endian.h>
 #include <fcntl.h>
+#include <float.h>
 #include <unistd.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -93,24 +95,45 @@ char* parse_nvmem_from_description(char* itemname)
 struct uniee_map uniee_field_type_map[] = UNIEE_FIELD_TYPE_MAP;
 #define map_length DIM(uniee_field_type_map)
 
+int print_property_value(int property_type, int len, uint8_t data[])
+{
+	uint16_t ui16;
+	uint32_t ui32;
+
+	if (len==1) {
+		printf("%d", data[0]);
+	} else if (len ==2) {
+		memcpy(&ui16, data, len);
+		printf("%d", ui16);
+	} else if (len == 4) {
+		memcpy(&ui32, data, len);
+		printf("%d", ui32);
+	} else if (len == 8 && property_type == UNIEE_FIELD_TYPE_AICAL) {
+		/* float[2] are saved as big endian */
+		uint32_t uia32[2];
+		memcpy(uia32, data, sizeof(uia32));
+		for (int i=0; i<2; i++)
+			uia32[i] = be32toh(uia32[i]);
+		printf("%f %f", *((float *)&uia32[0]), *((float *)&uia32[1]));
+	} else {
+		for (int i=0; i<len; i++)
+			printf("%s%02x", i?" ":"", data[i]);
+	}
+}
+
 int print_property(int property_type, int len, uint8_t data[])
 {
-	int i;
 	const char *name = NULL;
-	for (i=0; i<map_length; i++) {
+
+	for (int i=0; i<map_length; i++) {
 		if (property_type == uniee_field_type_map[i].index) {
 			name = uniee_field_type_map[i].name;
 			break;
 		}
 	}
-	printf("%-3d %-3d", property_type, len);
-	if (len==1) printf(" %d", data[0]);
-	else if (len ==2) printf(" %d", data[0]|(data[1]>>8));
-	else if (len ==4) printf(" %d", data[0]|(data[1]>>8)|(data[1]>>16)|(data[1]>>24));
-	else {
-		for (i=0; i<len; i++) printf(" %02x", data[i]);
-	}
-	if (name) 
+	printf("%-3d %-3d ", property_type, len);
+	print_property_value(property_type, len, data);
+	if (name)
 		printf("\t# %s\n", name);
 	else
 		printf("\n");
@@ -147,15 +170,8 @@ int do_attrs2(char* itemname, char* attrname)
 		if (strcasecmp(attrname, uniee_field_type_map[i].name) == 0) {
 			data = unipi_eeprom_find_property(unipi_id.data_area, &unipi_id.descriptor,
 			                                  uniee_field_type_map[i].index, &len);
-			//data = get_unipi_eeprom_property(nvmem, uniee_field_type_map[i].index, &len);
-			if (data == NULL) return 1;
-			if (len==1) printf("%d\n", data[0]);
-			else if (len ==2) printf("%d\n", data[0]|(data[1]>>8));
-			else if (len ==4) printf("%d\n", data[0]|(data[1]>>8)|(data[1]>>16)|(data[1]>>24));
-			else {
-				for (j=0; j<len; j++) printf("%s%02x", j?" ":"", data[j]);
-				printf("\n");
-			}
+			print_property_value(uniee_field_type_map[i].index, len, data);
+			printf("\n");
 			return 0;
 		}
 	}
@@ -192,6 +208,7 @@ int help(void)
 	"    product_family        product_options\n" \
 	"    platform_family       platform_id\n" \
 	"    mainboard_description mainboard_id\n" \
+	"    uboard_id\n" \
 	"    api_version\n\n");
 	return 1;
 }
