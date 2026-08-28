@@ -27,7 +27,7 @@ endif
 
 LIB_FILES = unipihostname uhelper sw_485 bootcount
 SBIN_FILES = os-configurator switchboot
-BIN_FILES = unipiid
+BIN_FILES = unipiid unipiidnc
 PY_FILES = os-configurator.py
 
 INCDIRS += ../unipi-hardware-id/include
@@ -35,7 +35,7 @@ INCDIRS += ../unipi-hardware-id/include
 INCDIR  = $(patsubst %,-I%, $(INCDIRS))
 #CPFLAGS = -Wall -Wstrict-prototypes
 
-all: $(LIB_FILES) $(PY_FILES)
+all: $(BIN_FILES) $(LIB_FILES) $(PY_FILES)
 
 %.o: %.c
 	$(CC) -c $(CPFLAGS) -I . $(INCDIR) $(PROJECT_VERSION) $< -o $@
@@ -43,14 +43,17 @@ all: $(LIB_FILES) $(PY_FILES)
 sw_485: sw_485.o
 	$(CC) $< -o $@
 
-unipiid:  unipiid.o unipiid-loader.o unipiid-getter.o
-	$(CC) $+ -o $@ -lcrypto -li2c
+unipiid:  unipiid.o unipiid-loader.o unipiid-getter.o uniee_crc.o
+	$(CC) $(CPFLAGS) $+ -o $@ -lcrypto -li2c
 	@chmod +x $@
 
 uhelper:  uhelper.o
 	$(CC) $< -o $@
 
 unipihostname: unipiid
+	@ln -s $< $@
+
+unipiidnc: unipiid
 	@ln -s $< $@
 
 bootcount:  bootcount.o
@@ -65,4 +68,4 @@ install:
 
 clean:
 	-rm -f *.o
-	-rm -f bootcount unipihostname uhelper unipiid sw_485
+	-rm -f bootcount unipihostname uhelper unipiid unipiidnc sw_485

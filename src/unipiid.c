@@ -28,14 +28,14 @@ bool hostname_in_args(int argc, char** argv)
 	return false;
 }
 
-int do_hostname(int argc, char** argv)
+int do_hostname(int argc, char** argv, bool skip_crc)
 {
 	int do_set = 0;
 	struct unipi_id_data unipi_id;
 	char hostname[256];
 	char *unipi_model, *unipi_serial, *unipi_platform;
 
-	if (!load_product_info(NULL, &unipi_id))
+	if (!load_product_info(NULL, &unipi_id, skip_crc))
 		return 0;
 	if (argc > 1) {
 		if (!hostname_in_args(argc, argv))
@@ -74,11 +74,11 @@ int do_hostname(int argc, char** argv)
 	return 0;
 }
 
-char* parse_nvmem_from_description(char* itemname)
+char* parse_nvmem_from_description(char* itemname, bool skip_crc)
 {
 	struct unipi_id_data unipi_id;
 
-	if (!load_product_info(NULL, &unipi_id))
+	if (!load_product_info(NULL, &unipi_id, skip_crc))
 		return NULL;
 
 	if (strcmp(itemname, "mainboard_description") == 0)
@@ -140,21 +140,22 @@ int print_property(int property_type, int len, uint8_t data[])
 	return 0;
 }
 
-int do_attrs(char* itemname)
+int do_attrs(char* itemname, bool skip_crc)
 {
 	struct unipi_id_data unipi_id;
 
 	if (strcmp(itemname, "mainboard_description") != 0)
 		return 0; /* ToDo: card_description */
 
-	if (!load_product_info(NULL, &unipi_id))
+	if (!load_product_info(NULL, &unipi_id, skip_crc))
 		return 1;
+
 	printf("typ len value\n");
 	unipi_eeprom_enum_properties(unipi_id.data_area, &unipi_id.descriptor, print_property);
 	return 0;
 }
 
-int do_attrs2(char* itemname, char* attrname)
+int do_attrs2(char* itemname, char* attrname, bool skip_crc)
 {
 	struct unipi_id_data unipi_id;
 	int i, j, len;
@@ -163,7 +164,7 @@ int do_attrs2(char* itemname, char* attrname)
 	if (strcmp(itemname, "mainboard_description") != 0)
 		return 0; /* ToDo: card_description */
 
-	if (!load_product_info(NULL, &unipi_id))
+	if (!load_product_info(NULL, &unipi_id, skip_crc))
 		return 1;
 
 	for (i=0; i<map_length; i++) {
@@ -178,7 +179,7 @@ int do_attrs2(char* itemname, char* attrname)
 	return 2;
 }
 
-int export_dir(int argc, char** argv)
+int export_dir(int argc, char** argv, bool skip_crc)
 {
 	char *eprom_path;
 	struct unipi_id_data unipi_id;
@@ -187,7 +188,7 @@ int export_dir(int argc, char** argv)
 	if (argc > 2)
 		eprom_path = argv[2];
 
-	if (load_product_info(eprom_path, &unipi_id)) {
+	if (load_product_info(eprom_path, &unipi_id, skip_crc)) {
 		load_cards(&unipi_id);
 		checksum_calc(&unipi_id);
 		export_unipi_id(&unipi_id);
@@ -218,26 +219,27 @@ int main(int argc, char** argv)
 	char * unipi_item;
 	int do_strip = 1;
 	struct unipi_id_data unipi_id;
+	bool skip_crc = strcmp(basename(argv[0]), "unipiidnc") == 0;
 
 	if (strcmp(basename(argv[0]), "unipihostname") == 0)
-		return do_hostname(argc, argv);
+		return do_hostname(argc, argv, skip_crc);
 
 	if (argc <= 1)
 		return help();
 
 	if (strcmp(argv[1], "-d") == 0)
-		return export_dir(argc, argv);
+		return export_dir(argc, argv, skip_crc);
 
 	if (strcmp(argv[1], "unipihostname") == 0 || strcmp(argv[1], "hostname") == 0)
-		return do_hostname(argc-1, &argv[1]);
+		return do_hostname(argc-1, &argv[1], skip_crc);
 
 	if (strstr(argv[1], "description") != NULL) {
 		do_strip = 0;
 		if ((argc > 2) && (strcmp(argv[2], "attr") == 0)) {
 			if (argc > 3) {
-				return do_attrs2(argv[1], argv[3]);
+				return do_attrs2(argv[1], argv[3], skip_crc);
 			} else {
-				return do_attrs(argv[1]);
+				return do_attrs(argv[1], skip_crc);
 			}
 		}
 	}
@@ -251,7 +253,7 @@ int main(int argc, char** argv)
 		return 0;
 	}
 
-	if (load_product_info(NULL, &unipi_id)) {
+	if (load_product_info(NULL, &unipi_id, skip_crc)) {
 		unipi_item = get_unipi_id_item2(&unipi_id, argv[1], do_strip);
 		if (unipi_item) {
 			printf("%s", unipi_item);

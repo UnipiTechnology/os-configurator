@@ -40,12 +40,13 @@ struct unipi_id_data
 	char model_fullname[64];
 	char *main_eprom_path;
 	char *eprom_path[UNIPI_ID_MAX_IDS];
+	uint16_t computed_crc;
 };
 
 const char* unipi_id_get_family_name(struct unipi_id_data *unipi_id);
 bool export_unipi_id(struct unipi_id_data *unipi_id);
 int checksum_calc(struct unipi_id_data *unipi_id);
-bool load_product_info(const char *eprom_path, struct unipi_id_data *unipi_id);
+bool load_product_info(const char *eprom_path, struct unipi_id_data *unipi_id, bool skip_crc);
 void load_cards(struct unipi_id_data *unipi_id);
 char* get_unipi_id_item2(struct unipi_id_data *unipi_id, const char* item, int trunc);
 char* get_unipi_id_item(const char* item, int trunc);

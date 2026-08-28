@@ -25,6 +25,7 @@
 #include <unistd.h>
 
 #include "uniee.h"
+#include "uniee_crc.h"
 #include "uniee_values.h"
 #include "unipi_eprom.h"
 #include "unipi_id.h"
@@ -156,6 +157,21 @@ static uint8_t* unipi_eeprom_find_property(uint8_t *eprom, uniee_descriptor_area
 }
 */
 
+bool verify_crc(struct unipi_id_data *unipi_id)
+{
+	uniee_bank_3_t *bank3;
+
+	if (unipi_id == NULL)
+		return 0;
+	bank3 = &unipi_id->descriptor.product_info;
+	if ((bank3->checksum != 0xffff) && \
+	    (bank3->checksum != unipi_id->computed_crc)) {
+		fprintf(stderr,"Incorrect eeprom checksum. %04X %04X\n", bank3->checksum, unipi_id->computed_crc);
+		return 0;
+	}
+	return 1;
+}
+
 static uniee_descriptor_area* unipi_id_load_boardmem(const char *path,
 				int nvmem_index, struct unipi_id_data * unipi_id, uint8_t *buf)
 {
@@ -172,6 +188,7 @@ static uniee_descriptor_area* unipi_id_load_boardmem(const char *path,
 	//fprintf(stderr, "size %d\n", size);
 	if (nvmem_index==0) {
 		if (descriptor) {
+			unipi_id->computed_crc = prv_compute_checksum(buf, size);
 			uniee_fix_legacy_content(buf, size, descriptor);
 			unipi_id->family_data = get_family_data(descriptor->product_info.platform_id);
 			memcpy(unipi_id->data_area, buf, size - sizeof(uniee_descriptor_area));
@@ -446,7 +463,7 @@ bool find_i2c_adapter(char *filename, int maxlen)
 	return false;
 }
 
-bool load_product_info(const char *eprom_path, struct unipi_id_data *unipi_id)
+bool load_product_info(const char *eprom_path, struct unipi_id_data *unipi_id, bool skip_crc)
 {
 	char path[PATH_MAX];
 	char device[1024];
@@ -456,13 +473,17 @@ bool load_product_info(const char *eprom_path, struct unipi_id_data *unipi_id)
 	if (eprom_path == NULL) {
 		if (!get_eprom_device(device, sizeof(device))) {
 			fprintf(stderr, "Couldn't find identification eprom\n");
-			return 1;
+			return 0;
 		}
 		snprintf(path, sizeof(path), "%s/%s/eeprom", SYSFS_I2C, device);
 		eprom_path = path;
 	}
 	//fprintf(stderr, "Path %s\n", eprom_path);
-	return unipi_id_load_boardmem(eprom_path, 0, unipi_id, buf) != NULL;
+	if (unipi_id_load_boardmem(eprom_path, 0, unipi_id, buf) != NULL) {
+		if (skip_crc || verify_crc(unipi_id))
+			return true;
+	}
+	return false;
 }
 
 void load_cards(struct unipi_id_data *unipi_id)
