@@ -164,7 +164,7 @@ bool verify_crc(struct unipi_id_data *unipi_id)
 	if (unipi_id == NULL)
 		return 0;
 	bank3 = &unipi_id->descriptor.product_info;
-	if ((bank3->checksum != 0xffff) && \
+	if ((bank3->checksum != 0xffff) && (bank3->checksum != 0) && \
 	    (bank3->checksum != unipi_id->computed_crc)) {
 		fprintf(stderr,"Incorrect eeprom checksum. %04X %04X\n", bank3->checksum, unipi_id->computed_crc);
 		return 0;
